@@ -11,6 +11,10 @@ message (STATUS "${PROJECT_NAME} version ${CONSOLE_BRIDGE_VERSION}")
 include(GNUInstallDirs)
 include(GenerateExportHeader)
 
+if (NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+endif()
+
 # If compiler support symbol visibility, enable it.
 include(CheckCCompilerFlag)
 check_c_compiler_flag(-fvisibility=hidden HAS_VISIBILITY)
