@@ -26,7 +26,7 @@ if (HAS_VISIBILITY)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden")
 endif()
 
-if(NOT WIN32)
+if(NOT WIN32 AND NOT HUNTER_ENABLED)
   # Use c++11 compiler flag, since it's needed for console.cpp
   # It isn't in a header file, so it doesn't need to be exported
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
@@ -54,6 +54,10 @@ set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION
                ${CONSOLE_BRIDGE_MAJOR_VERSION}.${CONSOLE_BRIDGE_MINOR_VERSION})
 generate_export_header(${PROJECT_NAME}
     EXPORT_MACRO_NAME CONSOLE_BRIDGE_DLLAPI)
+target_include_directories(${PROJECT_NAME} PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include/>
+)
 
 install(TARGETS ${PROJECT_NAME}
   EXPORT ${PROJECT_NAME}-targets 
@@ -97,7 +101,7 @@ write_basic_config_version_file(
 
 install(EXPORT ${PROJECT_NAME}-targets
   FILE ${PROJECT_NAME}-targets.cmake
-  NAMESPACE ${PROJECT_NAME}::
+  NAMESPACE ros::
   DESTINATION ${CMAKE_CONFIG_INSTALL_DIR})
 install(FILES
         "${CMAKE_BINARY_DIR}/${cmake_conf_file}"
